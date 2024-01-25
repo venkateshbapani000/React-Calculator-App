@@ -1,36 +1,31 @@
-import React from "react"
-import Keypad from "./user"
+import { useState} from "react"
+import { useEffect} from "react"
+import ProductCard from "./productcard";
 import "./App.css"
-import { useState } from "react"
-function App(){
-   let [input,setInput]=useState("")
-       function handleClick(value){
-        setInput(input + value)
-       }
-       
-       
-       function calculate(value){
-        let outputval=eval(input)
-        setInput(outputval)
-       }
-       function handleClear(value){
-        setInput("")
-       }
-       
 
+function App(){
+  const [products,updateproducts]= useState([]);
+
+ useEffect(()=>{ 
+  getproducts()
+ },[])
+
+ async function getproducts(){
+  let res= await fetch("https://fakestoreapi.com/products")
+  let productlists= await res.json()
+ updateproducts(productlists)
+  console.log(productlists)}
+
+
+
+  if (products.length == 0){
+    return(<h1>fetching data....</h1>)
+  }
 
   return(
-       
-       <div className="container">
-        <h1>calculator App using React</h1>
-        <div className="calculator">
-          <input type="text" value={input} className="output" readOnly/>
-          <Keypad handleClick={handleClick} calculate={calculate} handleClear={handleClear}></Keypad>
-        
-        </div>
-      </div>
-      
-
-  )
+    <div className="product-list">
+   {products.map((p)=>(<ProductCard {...p} ></ProductCard>))}
+   </div>
+)
 }
 export default App
